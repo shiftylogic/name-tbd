@@ -1,0 +1,11 @@
+# Cargo Stuff
+Cargo.lock
+
+# Code Generation
+/target
+
+# macOS artifacts
+.DS_Store
+
+# Tooling artifacts
+.tools

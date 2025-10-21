@@ -1,0 +1,16 @@
+[package]
+name = "play"
+version = "0.1.0"
+edition = "2024"
+
+description = "Do nothing app for setup."
+license = "MIT"
+
+authors = [ "Robert Anderson (https://shiftylogic.dev)" ]
+homepage = "https://www.shiftylogic.com"
+repository = "https://github.com/shiftylogic/<update with repo>/demos/play"
+
+[dependencies]
+env_logger.workspace = true
+log.workspace = true
+

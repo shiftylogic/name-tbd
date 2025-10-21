@@ -1,0 +1,61 @@
+[graph]
+targets = []
+
+
+# More documentation for the advisories section can be found here:
+# https://embarkstudios.github.io/cargo-deny/checks/advisories/cfg.html
+[advisories]
+db-path = "./.tools/advisory-db"
+db-urls = ["https://github.com/rustsec/advisory-db"]
+yanked = "warn"
+ignore = []
+
+
+# More documentation for the licenses section can be found here:
+# https://embarkstudios.github.io/cargo-deny/checks/licenses/cfg.html
+[licenses]
+allow = [
+    #"Apache-2.0",
+    #"BSD-3-Clause",
+    #"ISC",
+    #"Zlib",
+    "MIT",
+]
+
+confidence-threshold = 0.8
+exceptions = [
+    #{ allow = ["Zlib"], name = "adler32", version = "*" },
+]
+
+[licenses.private]
+ignore = false
+registries = []
+
+# More documentation about the 'bans' section can be found here:
+# https://embarkstudios.github.io/cargo-deny/checks/bans/cfg.html
+[bans]
+multiple-versions = "warn"
+wildcards = "warn"
+highlight = "all"
+allow = []
+deny = []
+skip = [
+#    { name = "cfg-if" },                                    # Legacy cfg-if used in core-video-sys
+#    { name = "core-foundation", version = "0.7.0" },        # old core-graphics using old core-foundation
+#    { name = "core-foundation-sys", version = "0.7.0" },    # old core-foundation uses old core-foundation-sys
+#    { name = "core-graphics", version = "0.19.2" },         # core-video-sys using old core-graphics
+]
+skip-tree = []
+
+# More documentation about the 'sources' section can be found here:
+# https://embarkstudios.github.io/cargo-deny/checks/sources/cfg.html
+[sources]
+unknown-registry = "deny"
+unknown-git = "warn"
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]
+allow-git = []
+
+[sources.allow-org]
+github = []
+gitlab = []
+bitbucket = []

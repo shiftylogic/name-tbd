@@ -1,0 +1,22 @@
+[workspace]
+members = [
+    "demos/play",
+]
+resolver = "2"
+
+
+[workspace.dependencies]
+env_logger = { version = "0.11.8", default-features = false }
+log = { version = "0.4.28", default-features = false }
+
+
+[profile.dev]
+debug = 2
+lto = false
+opt-level = 0
+
+[profile.release]
+debug = 0
+incremental = true
+lto = true
+opt-level = 3
