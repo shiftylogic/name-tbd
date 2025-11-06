@@ -1,0 +1,31 @@
+[package]
+name = "gpui-play"
+version = "0.1.0"
+edition = "2024"
+
+description = "Playing around with GPUI and components by that team that brought us Zed Editor."
+license = "MIT"
+
+authors = [ "Robert Anderson (https://shiftylogic.dev)" ]
+homepage = "https://www.shiftylogic.com"
+repository = "https://github.com/shiftylogic/<update with repo>/demos/gpui-play"
+
+[dependencies]
+env_logger.workspace = true
+log.workspace = true
+
+[dependencies.anyhow]
+version = "1.0"
+default-features = false
+features = []
+
+[dependencies.gpui]
+version = "0.2.2"
+default-features = false
+features = ["font-kit"]
+
+# [dependencies.gpui-component]
+# version = "0.3.1"
+# default-features = false
+# features = []
+

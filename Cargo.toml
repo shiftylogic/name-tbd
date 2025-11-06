@@ -1,6 +1,8 @@
 [workspace]
 members = [
     "demos/play",
+    #"demos/bevy-play",
+    "demos/gpui-play",
 ]
 resolver = "2"
 
@@ -15,8 +17,16 @@ debug = 2
 lto = false
 opt-level = 0
 
+# For 3rd party packages, or slow happens
+[profile.dev.package."*"]
+opt-level = 3
+
+
+# For release / distribution, make go faster!
 [profile.release]
 debug = 0
-incremental = true
-lto = true
+lto = "thin"
 opt-level = 3
+codegen-units = 1
+strip = true
+
