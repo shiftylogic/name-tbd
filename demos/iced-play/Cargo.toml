@@ -1,0 +1,25 @@
+[package]
+name = "iced-play"
+version = "0.1.0"
+description = "Playground for 'iced' UI library."
+
+edition.workspace = true
+license.workspace = true
+
+authors.workspace = true
+homepage.workspace = true
+repository.workspace = true
+
+
+[dependencies]
+# clap.workspace = true
+env_logger.workspace = true
+log.workspace = true
+
+
+[dependencies.iced]
+# version = "0.14.0"
+git = "https://github.com/iced-rs/iced.git"
+rev = "ea61438"
+default-features = false
+features = ["wgpu", "thread-pool" ] #, "debug"]
