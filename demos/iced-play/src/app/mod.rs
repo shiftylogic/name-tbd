@@ -11,6 +11,7 @@
 
 mod constants;
 mod screens;
+mod widgets;
 
 use screens::Landing;
 

@@ -20,6 +20,6 @@ log.workspace = true
 [dependencies.iced]
 # version = "0.14.0"
 git = "https://github.com/iced-rs/iced.git"
-rev = "ea61438"
+rev = "9ef65db"
 default-features = false
 features = ["wgpu", "thread-pool", "svg"] #, "debug"]

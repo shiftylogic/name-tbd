@@ -92,3 +92,27 @@ where
  **/
 
 pub const APP_NAME: &str = "Iced Playground";
+
+//*******************
+// Sidebar styling
+//
+pub const SIDEBAR_PADDING: f32 = 16.;
+pub const SIDEBAR_SPACING: f32 = 16.;
+pub const SIDEBAR_BUTTON_ROUNDING: f32 = 5.;
+pub const SIDEBAR_BUTTON_PADDING: f32 = 8.;
+
+//*********************
+// Embedded Icon Paths
+//
+pub const SVG_CLIPS_DATA: &[u8] =
+    include_bytes!(concat!(env!("CARGO_MANIFEST_DIR"), "/icons/clips.svg"));
+pub const SVG_INFO_DATA: &[u8] =
+    include_bytes!(concat!(env!("CARGO_MANIFEST_DIR"), "/icons/info.svg"));
+pub const SVG_SETTINGS_DATA: &[u8] =
+    include_bytes!(concat!(env!("CARGO_MANIFEST_DIR"), "/icons/settings.svg"));
+pub const SVG_STATS_DATA: &[u8] =
+    include_bytes!(concat!(env!("CARGO_MANIFEST_DIR"), "/icons/stats.svg"));
+pub const SVG_TAGGING_DATA: &[u8] =
+    include_bytes!(concat!(env!("CARGO_MANIFEST_DIR"), "/icons/tagging.svg"));
+pub const SVG_TEAM_DATA: &[u8] =
+    include_bytes!(concat!(env!("CARGO_MANIFEST_DIR"), "/icons/team.svg"));

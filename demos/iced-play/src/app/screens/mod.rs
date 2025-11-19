@@ -13,21 +13,25 @@
 mod about;
 
 use {
-    crate::app::constants,
+    crate::app::{
+        constants,
+        widgets::{Icon, Sidebar, SidebarItem},
+    },
     iced::{
-        Color, Length, Subscription, Task, Theme,
-        alignment::{Horizontal, Vertical},
-        border,
+        Element, Length, Subscription, Task, Theme,
         event::Event,
-        widget::{button, column, container, row, rule, space, svg},
+        widget::{column, container, row, rule},
     },
 };
 
-pub type Element<'a, Message> = iced::Element<'a, Message, iced::Theme, iced::Renderer>;
-
+#[derive(PartialEq)]
 enum Screen {
-    About(about::About),
-    Home,
+    Stats,
+    Clips,
+    Tagging,
+    Team,
+    Settings,
+    About,
 }
 
 #[derive(Clone, Debug)]
@@ -41,6 +45,8 @@ pub enum Message {
 
     About(about::Message),
     Event(Event),
+
+    ThemeChanged(Theme),
 }
 
 /**
@@ -51,13 +57,17 @@ pub enum Message {
 pub struct Landing {
     theme: Option<Theme>,
     screen: Screen,
+
+    about_screen: Option<about::About>,
 }
 
 impl Landing {
     pub fn new() -> Self {
         Self {
-            theme: Some(Theme::Oxocarbon),
-            screen: Screen::Home,
+            theme: Some(Theme::TokyoNightStorm),
+            screen: Screen::Stats,
+
+            about_screen: None,
         }
     }
 
@@ -71,6 +81,11 @@ impl Landing {
 
     pub fn update(&mut self, message: Message) -> Task<Message> {
         match (&mut self.screen, message) {
+            (_, Message::ThemeChanged(theme)) => {
+                self.theme = Some(theme);
+                Task::none()
+            }
+
             // Handle any system events
             #[allow(clippy::match_single_binding)]
             (_, Message::Event(evt)) => match evt {
@@ -85,13 +100,14 @@ impl Landing {
             // Global messages don't care about overlay or screen
             //
             (_, Message::ShowAbout) => {
-                self.screen = Screen::About(about::About::new());
+                self.about_screen = Some(about::About::new());
+                self.screen = Screen::About;
                 Task::none()
             }
 
             (_, Message::ShowStats) => {
                 log::info!("Stats clicked");
-                self.screen = Screen::Home;
+                self.screen = Screen::Stats;
                 Task::none()
             }
 
@@ -118,50 +134,20 @@ impl Landing {
             //
             // Messages for specific screens
             //
-            (Screen::About(abt), Message::About(msg)) => abt.update(msg),
-            (Screen::Home, _) => todo!(),
+            (Screen::About, Message::About(msg)) => self.about_mut().update(msg),
+            (Screen::Clips, _) => todo!(),
+            (Screen::Settings, _) => todo!(),
+            (Screen::Stats, _) => todo!(),
+            (Screen::Tagging, _) => todo!(),
+            (Screen::Team, _) => todo!(),
         }
     }
 
     pub fn view(&self) -> Element<'_, Message> {
-        let content = match &self.screen {
-            Screen::Home => container(column![iced::widget::text("Home")])
-                .align_x(Horizontal::Center)
-                .align_y(Vertical::Center)
-                .width(Length::Fill)
-                .height(Length::Fill)
-                .into(),
-            Screen::About(abt) => abt.view().map(Message::About),
-        };
-
-        let sidebar = container(
-            column![
-                sidebar_item(svg(Icon::Stats), false, move || Message::ShowStats),
-                sidebar_item(svg(Icon::Clips), true, move || Message::ShowClips),
-                sidebar_item(svg(Icon::Tagging), false, move || Message::ShowTagging),
-                space::vertical(),
-                sidebar_item(svg(Icon::Team), false, move || Message::ShowTeam),
-                sidebar_item(svg(Icon::Settings), false, move || Message::ShowSettings),
-                sidebar_item(svg(Icon::Info), false, move || Message::ShowAbout),
-            ]
-            .spacing(8),
-        )
-        .align_x(Horizontal::Center)
-        .padding(16)
-        .width(100)
-        .height(Length::Fill);
-
         row![
-            sidebar,
+            self.sidebar(),
             rule::vertical(1).style(rule::weak),
-            container(content)
-                .width(Length::Fill)
-                .height(Length::Fill)
-                .style(|_| {
-                    container::Style::default()
-                        .background(Color::BLACK.scale_alpha(0.7))
-                        .border(border::rounded(16))
-                }),
+            self.content(),
         ]
         .into()
     }
@@ -171,54 +157,95 @@ impl Landing {
     }
 }
 
-fn sidebar_item<'a, Message: Clone + 'a>(
-    content: impl Into<Element<'a, Message>>,
-    is_active: bool,
-    on_press: impl Fn() -> Message + 'a,
-) -> Element<'a, Message> {
-    button(content)
-        .on_press_with(on_press)
-        .padding([8, 10])
-        .width(Length::Fill)
-        .style(move |theme, status| {
-            let base = button::Style {
-                border: border::rounded(5),
-                ..button::subtle(theme, status)
-            };
-
-            if is_active {
-                let bg = theme.extended_palette().background.weak;
-
-                button::Style {
-                    background: Some(bg.color.into()),
-                    text_color: bg.text,
-                    ..base
-                }
-            } else {
-                base
-            }
-        })
-        .into()
-}
-
-enum Icon {
-    Clips,
-    Info,
-    Settings,
-    Stats,
-    Tagging,
-    Team,
-}
-
-impl From<Icon> for iced::widget::svg::Handle {
-    fn from(icon: Icon) -> Self {
-        match icon {
-            Icon::Clips => Self::from_memory(include_bytes!("../../../icons/clips.svg")),
-            Icon::Info => Self::from_memory(include_bytes!("../../../icons/info.svg")),
-            Icon::Settings => Self::from_memory(include_bytes!("../../../icons/settings.svg")),
-            Icon::Stats => Self::from_memory(include_bytes!("../../../icons/stats.svg")),
-            Icon::Tagging => Self::from_memory(include_bytes!("../../../icons/tagging.svg")),
-            Icon::Team => Self::from_memory(include_bytes!("../../../icons/team.svg")),
-        }
+/**
+ *
+ * Helper methods for unwrapping 'screen' structures (as needed).
+ *
+ **/
+impl Landing {
+    fn about(&self) -> &about::About {
+        self.about_screen
+            .as_ref()
+            .expect("invalid state: 'about' not constructed")
     }
+
+    fn about_mut(&mut self) -> &mut about::About {
+        self.about_screen
+            .as_mut()
+            .expect("invalid state: 'about' not constructed")
+    }
+}
+
+/**
+ *
+ * Build core parts of landing UI
+ *
+ **/
+impl Landing {
+    fn content(&self) -> Element<'_, Message> {
+        container(column![
+            match &self.screen {
+                Screen::About => self.about().view().map(Message::About),
+                Screen::Clips => not_implemented(),
+                Screen::Settings => not_implemented(),
+                Screen::Stats => not_implemented(),
+                Screen::Tagging => not_implemented(),
+                Screen::Team => not_implemented(),
+            },
+            iced::widget::pick_list(Theme::ALL, self.theme.as_ref(), Message::ThemeChanged)
+                .width(Length::Fill),
+        ])
+        .width(Length::Fill)
+        .into()
+    }
+
+    fn sidebar(&self) -> Element<'_, Message> {
+        let is_active = |scr| self.screen == scr;
+
+        Sidebar::with_items([
+            SidebarItem::icon(Icon::Stats, Message::ShowStats, is_active(Screen::Stats)),
+            SidebarItem::icon(Icon::Clips, Message::ShowClips, is_active(Screen::Clips)),
+            SidebarItem::icon(
+                Icon::Tagging,
+                Message::ShowTagging,
+                is_active(Screen::Tagging),
+            ),
+            SidebarItem::Gap,
+            SidebarItem::icon(Icon::Team, Message::ShowTeam, is_active(Screen::Team)),
+            SidebarItem::icon(
+                Icon::Settings,
+                Message::ShowSettings,
+                is_active(Screen::Settings),
+            ),
+            SidebarItem::icon(Icon::Info, Message::ShowAbout, is_active(Screen::About)),
+        ])
+        .into()
+    }
+}
+
+/**
+ *
+ * TODO: Delete placeholder when no longer needed
+ *
+ **/
+fn not_implemented<'a, Message: Clone + 'a>() -> Element<'a, Message> {
+    container(column![
+        iced::widget::svg(Icon::Info)
+            .width(Length::Fill)
+            .height(32)
+            .style(|_, _| {
+                iced::widget::svg::Style {
+                    color: Some(iced::Color::WHITE),
+                }
+            }),
+        iced::widget::text("Not implemented.")
+            .width(Length::Fill)
+            .size(32)
+            .center()
+            .color(iced::Color::WHITE),
+    ])
+    .height(Length::Fill)
+    .align_x(iced::alignment::Horizontal::Center)
+    .align_y(iced::alignment::Vertical::Center)
+    .into()
 }

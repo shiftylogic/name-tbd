@@ -24,6 +24,7 @@ pub struct About;
 
 impl About {
     pub fn new() -> Self {
+        log::trace!("constructing 'about' screen");
         About {}
     }
 
@@ -31,13 +32,14 @@ impl About {
         #[allow(clippy::match_single_binding)]
         match message {
             _ => {
-                log::info!("Message directed to 'about' ({:?})", message);
+                log::trace!("Message directed to 'about' ({:?})", message);
                 Task::none()
             }
         }
     }
 
     pub fn view(&self) -> Element<'_, Message> {
+        //log::trace!("rendering 'about'");
         container(column![
             text("About"),
             button("Close").on_press(Message::Other),
