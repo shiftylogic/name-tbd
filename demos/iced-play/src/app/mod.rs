@@ -11,10 +11,7 @@
 
 mod screens;
 
-use {
-    iced::{Element, Task},
-    screens::{Message, Screen},
-};
+use screens::Landing;
 
 /**
  *
@@ -22,32 +19,9 @@ use {
  *
  **/
 pub fn run() {
-    iced::application(App::new, App::update, App::view)
+    iced::application(Landing::new, Landing::update, Landing::view)
+        .subscription(Landing::subscription)
+        .theme(Landing::theme)
         .run()
         .expect("failed to launch application");
-}
-
-/**
- *
- * Implements the top-level App structure.
- *
- **/
-struct App {
-    screen: Screen,
-}
-
-impl App {
-    fn new() -> Self {
-        App {
-            screen: Screen::About(screens::about::About::new()),
-        }
-    }
-
-    fn update(&mut self, message: Message) -> Task<Message> {
-        screens::update(message, &mut self.screen)
-    }
-
-    fn view(&self) -> Element<'_, Message> {
-        screens::render(&self.screen)
-    }
 }
