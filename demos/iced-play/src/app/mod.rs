@@ -9,6 +9,7 @@
  *   Implementation of the application initialization logic.
  */
 
+mod constants;
 mod screens;
 
 use screens::Landing;
@@ -20,6 +21,7 @@ use screens::Landing;
  **/
 pub fn run() {
     iced::application(Landing::new, Landing::update, Landing::view)
+        .title(Landing::title)
         .subscription(Landing::subscription)
         .theme(Landing::theme)
         .run()

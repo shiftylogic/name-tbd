@@ -12,12 +12,15 @@
 
 mod about;
 
-use iced::{
-    Color, Length, Subscription, Task, Theme,
-    alignment::{Horizontal, Vertical},
-    border,
-    event::Event,
-    widget::{button, column, container, row, rule, space, svg},
+use {
+    crate::app::constants,
+    iced::{
+        Color, Length, Subscription, Task, Theme,
+        alignment::{Horizontal, Vertical},
+        border,
+        event::Event,
+        widget::{button, column, container, row, rule, space, svg},
+    },
 };
 
 pub type Element<'a, Message> = iced::Element<'a, Message, iced::Theme, iced::Renderer>;
@@ -60,6 +63,10 @@ impl Landing {
 
     pub fn subscription(&self) -> Subscription<Message> {
         iced::event::listen().map(Message::Event)
+    }
+
+    pub fn title(&self) -> String {
+        constants::APP_NAME.to_string()
     }
 
     pub fn update(&mut self, message: Message) -> Task<Message> {
@@ -129,53 +136,24 @@ impl Landing {
 
         let sidebar = container(
             column![
-                button(svg(Icon::Stats))
-                    .width(32)
-                    .height(32)
-                    .padding(8)
-                    .style(button::secondary)
-                    .on_press(Message::ShowStats),
-                button(svg(Icon::Clips))
-                    .width(32)
-                    .height(32)
-                    .padding(8)
-                    .style(button::secondary)
-                    .on_press(Message::ShowClips),
-                button(svg(Icon::Tagging))
-                    .width(32)
-                    .height(32)
-                    .padding(8)
-                    .style(button::secondary)
-                    .on_press(Message::ShowTagging),
+                sidebar_item(svg(Icon::Stats), false, move || Message::ShowStats),
+                sidebar_item(svg(Icon::Clips), true, move || Message::ShowClips),
+                sidebar_item(svg(Icon::Tagging), false, move || Message::ShowTagging),
                 space::vertical(),
-                button(svg(Icon::Team))
-                    .width(32)
-                    .height(32)
-                    .padding(8)
-                    .style(button::secondary)
-                    .on_press(Message::ShowTeam),
-                button(svg(Icon::Settings))
-                    .width(32)
-                    .height(32)
-                    .padding(8)
-                    .style(button::secondary)
-                    .on_press(Message::ShowSettings),
-                button(svg(Icon::Info))
-                    .width(32)
-                    .height(32)
-                    .padding(8)
-                    .style(button::secondary)
-                    .on_press(Message::ShowAbout),
+                sidebar_item(svg(Icon::Team), false, move || Message::ShowTeam),
+                sidebar_item(svg(Icon::Settings), false, move || Message::ShowSettings),
+                sidebar_item(svg(Icon::Info), false, move || Message::ShowAbout),
             ]
             .spacing(8),
         )
         .align_x(Horizontal::Center)
         .padding(16)
+        .width(100)
         .height(Length::Fill);
 
         row![
             sidebar,
-            rule::vertical(2),
+            rule::vertical(1).style(rule::weak),
             container(content)
                 .width(Length::Fill)
                 .height(Length::Fill)
@@ -191,6 +169,36 @@ impl Landing {
     pub fn theme(&self) -> Option<Theme> {
         self.theme.clone()
     }
+}
+
+fn sidebar_item<'a, Message: Clone + 'a>(
+    content: impl Into<Element<'a, Message>>,
+    is_active: bool,
+    on_press: impl Fn() -> Message + 'a,
+) -> Element<'a, Message> {
+    button(content)
+        .on_press_with(on_press)
+        .padding([8, 10])
+        .width(Length::Fill)
+        .style(move |theme, status| {
+            let base = button::Style {
+                border: border::rounded(5),
+                ..button::subtle(theme, status)
+            };
+
+            if is_active {
+                let bg = theme.extended_palette().background.weak;
+
+                button::Style {
+                    background: Some(bg.color.into()),
+                    text_color: bg.text,
+                    ..base
+                }
+            } else {
+                base
+            }
+        })
+        .into()
 }
 
 enum Icon {
