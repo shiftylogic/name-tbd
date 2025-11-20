@@ -9,7 +9,6 @@
  */
 
 mod app;
-// mod constants;
 
 fn main() {
     env_logger::init();
