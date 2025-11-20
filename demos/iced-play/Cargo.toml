@@ -18,7 +18,7 @@ log.workspace = true
 
 
 [dependencies.iced]
-# version = "0.14.0-dev"
 git = "https://github.com/shiftylogic/iced.git"
+version = "0.14.0-dev"
 default-features = false
 features = ["wgpu", "thread-pool", "svg"] #, "debug"]

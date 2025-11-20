@@ -8,18 +8,25 @@ targets = []
 db-path = "./.tools/advisory-db"
 db-urls = ["https://github.com/rustsec/advisory-db"]
 yanked = "warn"
-ignore = []
+ignore = [
+    "RUSTSEC-2024-0436",    # 'paste' is still viable. Waiting for 'pastey' migration.
+]
 
 
 # More documentation for the licenses section can be found here:
 # https://embarkstudios.github.io/cargo-deny/checks/licenses/cfg.html
 [licenses]
 allow = [
-    #"Apache-2.0",
-    #"BSD-3-Clause",
-    #"ISC",
-    #"Zlib",
+    "Apache-2.0",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "BSL-1.0",
+    "CC0-1.0",
+    "ISC",
+    "Zlib",
     "MIT",
+    "MPL-2.0",
+    "Unicode-3.0",
 ]
 
 confidence-threshold = 0.8
@@ -45,7 +52,9 @@ skip = [
 #    { name = "core-foundation-sys", version = "0.7.0" },    # old core-foundation uses old core-foundation-sys
 #    { name = "core-graphics", version = "0.19.2" },         # core-video-sys using old core-graphics
 ]
-skip-tree = []
+skip-tree = [
+    { crate = "iced@0.14.0-dev", reason = "playing with latest development" },
+]
 
 # More documentation about the 'sources' section can be found here:
 # https://embarkstudios.github.io/cargo-deny/checks/sources/cfg.html
@@ -53,7 +62,11 @@ skip-tree = []
 unknown-registry = "deny"
 unknown-git = "warn"
 allow-registry = ["https://github.com/rust-lang/crates.io-index"]
-allow-git = []
+allow-git = [
+    "https://github.com/iced-rs/cryoglyph.git",
+    "https://github.com/iced-rs/winit.git",
+    "https://github.com/shiftylogic/iced.git",
+]
 
 [sources.allow-org]
 github = []

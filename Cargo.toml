@@ -49,3 +49,9 @@ opt-level = 3
 codegen-units = 1
 strip = true
 
+
+##########################################
+# Patched crates
+#
+#[patch.crates-io]
+
