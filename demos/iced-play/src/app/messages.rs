@@ -12,15 +12,43 @@
  */
 
 use {
-    super::views::about,
-    iced::{Event, Theme},
+    super::{State, View, views::about},
+    iced::{Event, Subscription, Task, Theme},
 };
 
 #[derive(Clone, Debug)]
 pub enum Message {
-    ChangeView(super::View),
+    ChangeView(View),
     About(about::Message),
 
     Event(Event),
     ThemeChanged(Theme),
+}
+
+pub fn subscription(_: &State) -> Subscription<Message> {
+    iced::event::listen().map(Message::Event)
+}
+
+pub fn update(state: &mut State, message: Message) -> Task<Message> {
+    match message {
+        Message::ThemeChanged(theme) => {
+            state.change_theme(theme);
+            Task::none()
+        }
+
+        // Handle any system events
+        // TODO: Handle keyboard bindings
+        Message::Event(_evt) => Task::none(),
+
+        // Handle a view change
+        Message::ChangeView(view) => {
+            state.change_view(view);
+            Task::none()
+        }
+
+        //
+        // Messages for specific views
+        //
+        _ => state.root_view().update(state, message),
+    }
 }

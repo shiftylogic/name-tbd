@@ -92,6 +92,7 @@ where
  **/
 
 pub const APP_NAME: &str = "Iced Playground";
+pub const DEFAULT_THEME: iced::Theme = iced::Theme::TokyoNightStorm;
 
 //*******************
 // Sidebar styling

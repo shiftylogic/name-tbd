@@ -13,7 +13,7 @@
 pub mod about;
 
 use {
-    super::{AppState, Message},
+    super::{Message, State},
     iced::Element,
 };
 
@@ -30,15 +30,21 @@ pub enum View {
     Team,
 }
 
+/**
+ *
+ * Implementation details specific to 'iced' UI library (i.e. constructing the user
+ * interface + routing / handling of messages).
+ *
+ **/
 impl View {
-    pub fn view<'a>(&self, _state: &AppState) -> iced::Element<'a, Message> {
+    pub fn view<'a>(&self, _state: &State) -> iced::Element<'a, Message> {
         match self {
             View::About => about::view().map(Message::About),
             _ => not_implemented(),
         }
     }
 
-    pub fn update(&self, _state: &AppState, message: Message) -> iced::Task<Message> {
+    pub fn update(&self, _state: &State, message: Message) -> iced::Task<Message> {
         match (self, message) {
             (View::About, Message::About(msg)) => about::update(msg).execute(),
             _ => iced::Task::none(), // todo!(),
