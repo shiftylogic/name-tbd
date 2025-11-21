@@ -6,7 +6,8 @@
  * Module: app/widgets/sidebar
  *
  * Purpose:
- *   Application or screen sidebar-style / tab-like selector widget.
+ *   Application 'sidebar' widget. Widget is completely dump and contains no state.
+ *   Sidebar items trigger messages relative to the context of the sidebar.
  */
 
 use {

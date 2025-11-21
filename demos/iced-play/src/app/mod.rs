@@ -10,10 +10,17 @@
  */
 
 mod constants;
-mod screens;
+
+mod actions;
+mod messages;
+mod root;
+mod views;
 mod widgets;
 
-use screens::Landing;
+/**
+ * Re-export the application-level pieces (Actions, Messages, Views, etc).
+ **/
+use {actions::Action, messages::Message, views::View};
 
 /**
  *
@@ -21,10 +28,24 @@ use screens::Landing;
  *
  **/
 pub fn run() {
-    iced::application(Landing::new, Landing::update, Landing::view)
-        .title(Landing::title)
-        .subscription(Landing::subscription)
-        .theme(Landing::theme)
+    iced::application(AppState::new, root::update, root::view)
+        .title(root::title)
+        .subscription(root::subscription)
+        .theme(root::theme)
         .run()
         .expect("failed to launch application");
+}
+
+struct AppState {
+    active_theme: Option<iced::Theme>,
+    active_view: View,
+}
+
+impl AppState {
+    fn new() -> Self {
+        Self {
+            active_theme: Some(iced::Theme::TokyoNightStorm),
+            active_view: View::default(),
+        }
+    }
 }
