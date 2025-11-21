@@ -13,6 +13,7 @@
 use {
     super::{
         Message, State, View,
+        views::splash,
         widgets::{Icon, Sidebar, SidebarItem},
     },
     iced::{
@@ -22,28 +23,30 @@ use {
 };
 
 pub fn view(state: &State) -> Element<'_, Message> {
-    row![
-        // Application sidebar (navigate around views)
-        Sidebar::with_items([
-            sidebaritem_from_view(state, View::Stats),
-            sidebaritem_from_view(state, View::Clips),
-            sidebaritem_from_view(state, View::Tagging),
-            SidebarItem::Gap,
-            sidebaritem_from_view(state, View::Team),
-            sidebaritem_from_view(state, View::Settings),
-            sidebaritem_from_view(state, View::About),
-        ]),
-        // Simple visible separator between sidebar and main view
-        rule::vertical(1).style(rule::weak),
-        // Render the main view
-        container(column![
-            state.root_view().view(state),
-            iced::widget::pick_list(Theme::ALL, state.theme(), Message::ThemeChanged)
-                .width(Length::Fill),
-        ])
-        .width(Length::Fill),
-    ]
-    .into()
+    state.root_view().map_or_else(splash::view, |view| {
+        row![
+            // Application sidebar (navigate around views)
+            Sidebar::with_items([
+                sidebaritem_from_view(state, View::Stats),
+                sidebaritem_from_view(state, View::Clips),
+                sidebaritem_from_view(state, View::Tagging),
+                SidebarItem::Gap,
+                sidebaritem_from_view(state, View::Team),
+                sidebaritem_from_view(state, View::Settings),
+                sidebaritem_from_view(state, View::About),
+            ]),
+            // Simple visible separator between sidebar and main view
+            rule::vertical(1).style(rule::weak),
+            // Render the main view
+            container(column![
+                view.view(state),
+                iced::widget::pick_list(Theme::ALL, state.theme(), Message::ThemeChanged)
+                    .width(Length::Fill),
+            ])
+            .width(Length::Fill),
+        ]
+        .into()
+    })
 }
 
 /**
@@ -62,7 +65,6 @@ fn sidebaritem_from_view<'a>(state: &State, view: View) -> SidebarItem<'a, Messa
             View::Stats => Icon::Stats,
             View::Tagging => Icon::Tagging,
             View::Team => Icon::Team,
-            _ => unreachable!(),
         },
         Message::ChangeView(view.clone()),
         state.is_view_active(view),

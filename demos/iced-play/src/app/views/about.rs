@@ -8,7 +8,7 @@
  * Purpose:
  *   Implementation of the application 'About' view.
  *
- *   NOTE: Uses the 'viewable' pattern so have no owned state.
+ *   NOTE: Uses the 'viewable' pattern, so has no owned state.
  */
 
 use {

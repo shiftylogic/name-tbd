@@ -11,17 +11,15 @@
  */
 
 pub mod about;
+pub mod splash;
 
 use {
     super::{Message, State},
     iced::Element,
 };
 
-#[derive(Clone, Debug, Default, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum View {
-    #[default]
-    Splash,
-
     About,
     Clips,
     Settings,

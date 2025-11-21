@@ -23,7 +23,7 @@ use {
  **/
 pub struct State {
     active_theme: Option<Theme>,
-    active_view: View,
+    active_view: Option<View>,
 }
 
 /**
@@ -36,11 +36,14 @@ pub struct State {
  **/
 impl State {
     pub fn is_view_active(&self, view: View) -> bool {
-        self.active_view == view
+        match &self.active_view {
+            Some(v) => *v == view,
+            None => false,
+        }
     }
 
-    pub fn root_view(&self) -> &View {
-        &self.active_view
+    pub fn root_view(&self) -> Option<&View> {
+        self.active_view.as_ref()
     }
 
     pub fn theme(&self) -> Option<Theme> {
@@ -71,7 +74,7 @@ impl State {
 
     pub fn change_view(&mut self, view: View) {
         log::trace!("View change [{:?} => {:?}]", self.active_view, view);
-        self.active_view = view;
+        self.active_view = Some(view);
     }
 }
 
@@ -88,8 +91,21 @@ pub fn load() -> (State, Task<Message>) {
     (
         State {
             active_theme: Some(constants::DEFAULT_THEME),
-            active_view: View::default(),
+            active_view: None,
         },
-        Task::none(),
+        Task::perform(load_all_the_things(), |_| Message::ChangeView(View::Stats)),
     )
+}
+
+async fn load_all_the_things() -> u32 {
+    use iced::futures::channel;
+
+    let (tx, rx) = channel::oneshot::channel();
+
+    std::thread::spawn(|| {
+        std::thread::sleep(std::time::Duration::from_millis(2000));
+        tx.send(42).expect("facepalm");
+    });
+
+    rx.await.expect("bad stuff happened")
 }

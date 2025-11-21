@@ -49,6 +49,8 @@ pub fn update(state: &mut State, message: Message) -> Task<Message> {
         //
         // Messages for specific views
         //
-        _ => state.root_view().update(state, message),
+        _ => state
+            .root_view()
+            .map_or_else(Task::none, |view| view.update(state, message)),
     }
 }
