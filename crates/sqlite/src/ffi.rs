@@ -18,6 +18,12 @@ pub const SQLITE_OK: ::core::ffi::c_int = 0;
 pub const SQLITE_ROW: ::core::ffi::c_int = 100;
 pub const SQLITE_DONE: ::core::ffi::c_int = 101;
 
+pub const SQLITE_INTEGER: ::core::ffi::c_int = 1;
+pub const SQLITE_FLOAT: ::core::ffi::c_int = 2;
+pub const SQLITE_TEXT: ::core::ffi::c_int = 3;
+pub const SQLITE_BLOB: ::core::ffi::c_int = 4;
+pub const SQLITE_NULL: ::core::ffi::c_int = 5;
+
 /**
  *
  * Opaque SQLite database object as defined in 'C' library.
@@ -112,8 +118,10 @@ unsafe extern "C" {
         tail_out: *mut *const ::core::ffi::c_char,
     ) -> SqliteResult;
 
-    pub fn sqlite3_step(stmt: *mut Sqlite3Stmt) -> ::core::ffi::c_int;
+    pub fn sqlite3_clear_bindings(stmt: *mut Sqlite3Stmt) -> SqliteResult;
+    pub fn sqlite3_data_count(stmt: *mut Sqlite3Stmt) -> ::core::ffi::c_int;
     pub fn sqlite3_reset(stmt: *mut Sqlite3Stmt) -> SqliteResult;
+    pub fn sqlite3_step(stmt: *mut Sqlite3Stmt) -> ::core::ffi::c_int;
     pub fn sqlite3_finalize(stmt: *mut Sqlite3Stmt) -> SqliteResult;
 
     pub fn sqlite3_bind_parameter_index(
@@ -148,4 +156,35 @@ unsafe extern "C" {
         text_bytes: ::core::ffi::c_int,
         free: ::core::option::Option<MemDeallocCallback>,
     ) -> SqliteResult;
+
+    pub fn sqlite3_column_count(stmt: *mut Sqlite3Stmt) -> ::core::ffi::c_int;
+    pub fn sqlite3_column_name(
+        stmt: *mut Sqlite3Stmt,
+        index: ::core::ffi::c_int,
+    ) -> *const ::core::ffi::c_char;
+    pub fn sqlite3_column_type(
+        stmt: *mut Sqlite3Stmt,
+        index: ::core::ffi::c_int,
+    ) -> ::core::ffi::c_int;
+
+    // pub fn sqlite3_column_blob(
+    //     stmt: *mut Sqlite3Stmt,
+    //     index: ::core::ffi::c_int,
+    // ) -> *const ::core::ffi::c_void;
+    pub fn sqlite3_column_double(
+        stmt: *mut Sqlite3Stmt,
+        index: ::core::ffi::c_int,
+    ) -> ::core::ffi::c_double;
+    pub fn sqlite3_column_int(
+        stmt: *mut Sqlite3Stmt,
+        index: ::core::ffi::c_int,
+    ) -> ::core::ffi::c_int;
+    pub fn sqlite3_column_int64(
+        stmt: *mut Sqlite3Stmt,
+        index: ::core::ffi::c_int,
+    ) -> ::core::ffi::c_longlong;
+    pub fn sqlite3_column_text(
+        stmt: *mut Sqlite3Stmt,
+        index: ::core::ffi::c_int,
+    ) -> *const ::core::ffi::c_char;
 }

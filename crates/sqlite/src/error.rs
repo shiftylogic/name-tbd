@@ -27,6 +27,7 @@ pub enum Error {
     StatementExecute(i32),
     StatementReset(i32),
     BindingNameUnknown(String),
+    ColumnIndexInvalid(u32),
 }
 
 impl std::fmt::Debug for Error {
@@ -43,6 +44,12 @@ impl std::fmt::Debug for Error {
             Self::StatementReset(code) => w("statement reset", *code),
             Self::BindingNameUnknown(name) => {
                 write!(f, "sqlite binding lookup failed (name: '{name}')")
+            }
+            Self::ColumnIndexInvalid(idx) => {
+                write!(
+                    f,
+                    "sqlite statement column name fetch failed (index: {idx})"
+                )
             }
         }
     }
